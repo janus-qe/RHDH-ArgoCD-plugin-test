@@ -4,6 +4,7 @@ metadata:
   name: test-argocd-component
   annotations:
     argocd/app-name: test-argocd-app
+    backstage.io/kubernetes-id: test-argocd-app
 spec:
   type: service
   lifecycle: production
