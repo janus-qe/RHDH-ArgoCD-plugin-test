@@ -3,6 +3,7 @@ kind: Rollout
 metadata:
   name: rollout-bluegreen
   labels:
+    app: rollout-bluegreen
     backstage.io/kubernetes-id: test-argocd-app
     app.kubernetes.io/instance: test-argocd-app
 spec:
