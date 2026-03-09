@@ -3,7 +3,7 @@ kind: Rollout
 metadata:
   name: canary-rollout-analysis
   labels:
-    app: rollouts
+    app: canary-rollout-analysis
     backstage.io/kubernetes-id: test-argocd-app
     app.kubernetes.io/instance: test-argocd-app
 spec:
