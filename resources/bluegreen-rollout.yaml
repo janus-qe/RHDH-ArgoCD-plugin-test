@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: rollout-bluegreen
+  labels:
+    backstage.io/kubernetes-id: test-argocd-app
+    app.kubernetes.io/instance: test-argocd-app
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: rollout-bluegreen
+      backstage.io/kubernetes-id: test-argocd-app
+      app.kubernetes.io/instance: test-argocd-app
+  template:
+    metadata:
+      labels:
+        app: rollout-bluegreen
+        backstage.io/kubernetes-id: test-argocd-app
+        app.kubernetes.io/instance: test-argocd-app
+    spec:
+      containers:
+        - name: rollouts-demo
+          image: argoproj/rollouts-demo:blue
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+  strategy:
+    blueGreen:
+      activeService: rollout-bluegreen-active
+      previewService: rollout-bluegreen-preview
+      autoPromotionEnabled: false
+      prePromotionAnalysis:
+        templates:
+          - templateName: random-fail
+          - templateName: always-pass
+      postPromotionAnalysis:
+        templates:
+          - templateName: random-fail
+          - templateName: always-pass

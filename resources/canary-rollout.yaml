@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: canary-rollout-analysis
+  labels:
+    app: rollouts
+    backstage.io/kubernetes-id: test-argocd-app
+    app.kubernetes.io/instance: test-argocd-app
+spec:
+  replicas: 4
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: canary-rollout-analysis
+      backstage.io/kubernetes-id: test-argocd-app
+      app.kubernetes.io/instance: test-argocd-app
+  template:
+    metadata:
+      labels:
+        app: canary-rollout-analysis
+        backstage.io/kubernetes-id: test-argocd-app
+        app.kubernetes.io/instance: test-argocd-app
+    spec:
+      containers:
+        - name: rollouts-demo
+          image: argoproj/rollouts-demo:yellow
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              memory: 32Mi
+              cpu: 5m
+  strategy:
+    canary:
+      steps:
+        - setWeight: 25
+        - pause: { duration: 5 }
+        - setWeight: 50
+        - analysis:
+            templates:
+              - templateName: random-fail
+              - templateName: always-pass
